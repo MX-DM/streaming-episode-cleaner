@@ -25,10 +25,6 @@ public class EpisodeProcessor {
             }
         }
 
-        System.out.println("Parsed episodes: " + parsed.size());
-        for (Episode e : parsed) {
-            System.out.println(e.toString());}
-
         List<Episode> deduped = deduplicator.deduplicate(parsed, stats);
 
         stats.totalOutput = deduped.size();

@@ -41,8 +41,8 @@ public class EpisodeDeduplicator {
 
     private EpisodeKey buildKey(Episode e) {
 
-        String series = normalizer.normalize(e.getSeriesName());
-        String title = normalizer.normalize(e.getEpisodeTitle());
+        String series = e.getSeriesName();
+        String title = e.getEpisodeTitle();
 
         return new EpisodeKey(series, e.getSeasonNumber(), e.getEpisodeNumber(), title);
     }
