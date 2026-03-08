@@ -27,6 +27,19 @@ public class Episode {
                 ;
     }
 
+    public boolean hasValidAirDate() {
+        return airDate != null && !airDate.equalsIgnoreCase("Unknown");
+    }
+
+    public boolean hasValidTitle() {
+        return episodeTitle != null &&
+                !episodeTitle.equalsIgnoreCase("Untitled Episode");
+    }
+
+    public boolean hasValidNumbers() {
+        return seasonNumber > 0 && episodeNumber > 0;
+    }
+
     public String getSeriesName() { return seriesName; }
     public int getSeasonNumber() { return seasonNumber; }
     public int getEpisodeNumber() { return episodeNumber; }
