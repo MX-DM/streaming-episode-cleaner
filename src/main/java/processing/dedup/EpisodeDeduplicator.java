@@ -16,36 +16,57 @@ public class EpisodeDeduplicator {
 
             List<EpisodeKey> keys = generateKeys(episode);
 
-            Episode duplicate = null;
+            // Find all duplicates connected by any key
+            Set<Episode> duplicates = new HashSet<>();
 
             for (EpisodeKey key : keys) {
                 Episode existing = keyIndex.get(key);
                 if (existing != null) {
-                    duplicate = existing;
-                    break;
+                    duplicates.add(existing);
                 }
             }
 
-            if (duplicate == null) {
+            if (duplicates.isEmpty()) {
                 keptEpisodes.add(episode);
 
                 for (EpisodeKey key : keys) {
                     keyIndex.put(key, episode);
                 }
+
             } else {
-                Episode best = chooseBest(duplicate, episode);
 
-                if (best != duplicate) {
-                    keptEpisodes.remove(duplicate);
-                    keptEpisodes.add(best);
+                stats.duplicates += duplicates.size();
 
-                    for (EpisodeKey key : keys) {
-                        keyIndex.put(key, best);
-                    }
+                // Determine best episode among all connected ones
+                Episode best = episode;
+
+                for (Episode dup : duplicates) {
+                    best = chooseBest(best, dup);
                 }
-                stats.discarded++;
+
+                // Remove all duplicates from kept set
+                for (Episode dup : duplicates) {
+                    keptEpisodes.remove(dup);
+                }
+
+                keptEpisodes.add(best);
+
+                // Collect all keys from duplicates and current episode
+                Set<EpisodeKey> allKeys = new HashSet<>();
+
+                for (Episode dup : duplicates) {
+                    allKeys.addAll(generateKeys(dup));
+                }
+
+                allKeys.addAll(keys);
+
+                // Update index so all keys point to the best episode
+                for (EpisodeKey key : allKeys) {
+                    keyIndex.put(key, best);
+                }
             }
         }
+
         return new ArrayList<>(keptEpisodes);
     }
 
@@ -59,13 +80,22 @@ public class EpisodeDeduplicator {
         String title = ep.getEpisodeTitle();
 
         keys.add(new EpisodeKey(series, season, episode, null));
-        if (ep.hasValidTitle()) {
-            keys.add(new EpisodeKey(series, 0, episode, title));
-            keys.add(new EpisodeKey(series, season, 0, title));
-        }
+        keys.add(new EpisodeKey(series, 0, episode, title));
+        keys.add(new EpisodeKey(series, season, 0, title));
 
         return keys;
     }
+
+    /**
+     * Chooses the best episode between two duplicates.
+     * Priority order:
+     * 1. Episode with a valid air date
+     * 2. Episode with a valid title (not "untitled episode")
+     * 3. Episode with valid season and episode numbers (> 0)
+     *
+     * If both episodes have the same quality, the first one encountered
+     * is kept to preserve deterministic behavior.
+     */
 
     private Episode chooseBest(Episode a, Episode b) {
 

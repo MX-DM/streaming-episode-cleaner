@@ -2,20 +2,17 @@ package processing;
 
 public class EpisodeNormalizer {
 
-    public String normalize(String value, boolean[] correctedLine) {
+    public static String normalize(String input, boolean[]  correctedLine) {
+        if (input == null) return "";
 
-        if (value == null) return "";
+        String cleaned = input.trim().replaceAll("\\s+", " ");
 
-        String original = value;
-
-        String normalized = value.trim()
-                .replaceAll("\\s+", " ")
-                .toLowerCase();
-
-        if (!normalized.equals(original)) {
+        // Only count trailing spaces and extra spaces as a correction
+        if (!cleaned.equals(input)) {
             correctedLine[0] = true;
         }
 
-        return normalized;
+        // Return lowercased to ease comparison and for consistent results in cleaned csv. (Doesn't count as correction)
+        return cleaned.toLowerCase();
     }
 }

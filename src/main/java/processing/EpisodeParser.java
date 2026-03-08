@@ -9,7 +9,7 @@ public class EpisodeParser {
 
     // Expected number of CSV fields
     private static final int EXPECTED_FIELDS = 5;
-    private final EpisodeNormalizer normalizer = new EpisodeNormalizer();
+    private final EpisodeNormalizer normalizer =  new EpisodeNormalizer();
 
     public Episode parse(String line, ProcessingStats stats) {
         stats.totalInput++;
@@ -26,17 +26,16 @@ public class EpisodeParser {
             parts = pad(parts);
         }
 
-
         String seasonStr = parts[1].trim();
         String episodeStr = parts[2].trim();
-        String airDate = parts[4].trim();
+        String airDate = parts[4].trim().toLowerCase();
 
         // Track whether this line required any correction
         boolean[] correctedLine = {false};
 
         // Normalize text and increase corrected counter if necessary
-        String series = normalizer.normalize(parts[0], correctedLine);
-        String title = normalizer.normalize(parts[3], correctedLine);
+        String series = EpisodeNormalizer.normalize(parts[0], correctedLine);
+        String title = EpisodeNormalizer.normalize(parts[3], correctedLine);
 
         // Parse numeric fields (handles empty, negative, or invalid numbers)
         int season = parseNumber(seasonStr, correctedLine);
@@ -52,16 +51,16 @@ public class EpisodeParser {
 
         // Missing title -> default value
         if (title.isEmpty()) {
-            title = "Untitled Episode";
+            title = "untitled episode";
             correctedLine[0] = true;
         }
 
         // Missing or invalid air date -> default value
         if (airDate.isEmpty()) {
-            airDate = "Unknown";
+            airDate = "unknown";
             correctedLine[0] = true;
-        } else if (!isValidDate(airDate) && !airDate.equals("Unknown")) {
-            airDate = "Unknown";
+        } else if (!airDate.equals("unknown") && !isValidDate(airDate)) {
+            airDate = "unknown";
             correctedLine[0] = true;
         }
 
@@ -71,7 +70,7 @@ public class EpisodeParser {
          * (0 / "Untitled Episode" / "Unknown"), the record cannot
          * uniquely identify an episode and must be discarded.
          */
-        if (episode == 0 && title.equals("Untitled Episode") && airDate.equals("Unknown")) {
+        if (episode == 0 && title.equals("untitled episode") && airDate.equals("unknown")) {
             stats.discarded++;
             return null;
         }
