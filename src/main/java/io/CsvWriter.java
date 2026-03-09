@@ -5,6 +5,10 @@ import model.Episode;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Writes the cleaned episode catalog into a CSV file.
+ */
+
 public class CsvWriter {
 
     public void writeEpisodes(String path, List<Episode> episodes) throws IOException {

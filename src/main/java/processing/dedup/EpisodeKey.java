@@ -2,6 +2,13 @@ package processing.dedup;
 
 import java.util.Objects;
 
+/**
+ * Composite key used to detect potential duplicate episodes.
+ *
+ * Keys are generated according to the deduplication rules
+ * defined in the problem statement.
+ */
+
 public class EpisodeKey {
 
     private final String series;

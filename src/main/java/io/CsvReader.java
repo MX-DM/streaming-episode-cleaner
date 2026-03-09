@@ -3,6 +3,11 @@ package io;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Reads a CSV file and returns its lines.
+ * Automatically detects and skips a header if present.
+ */
+
 public class CsvReader {
 
     public List<String> read(String path) throws IOException {

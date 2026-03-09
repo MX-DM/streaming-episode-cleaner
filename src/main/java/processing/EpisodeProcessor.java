@@ -7,6 +7,11 @@ import stats.ProcessingStats;
 
 import java.util.*;
 
+/**
+ * Coordinates the full processing pipeline:
+ * parsing → deduplication → sorting.
+ */
+
 public class EpisodeProcessor {
 
     private EpisodeParser parser = new EpisodeParser();

@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Represents a single episode record after parsing and normalization.
+ */
+
 public class Episode {
 
     private String seriesName;

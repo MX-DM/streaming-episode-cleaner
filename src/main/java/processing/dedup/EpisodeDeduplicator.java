@@ -5,6 +5,22 @@ import stats.ProcessingStats;
 
 import java.util.*;
 
+/**
+ * Removes duplicate episodes based on multiple matching strategies.
+ *
+ * Duplicate detection is based on three possible keys:
+ *
+ * 1. (series, season, episode)
+ * 2. (series, 0, episode, title)
+ * 3. (series, season, 0, title)
+ *
+ * The algorithm supports transitive matching. This means that
+ * if episode A matches B, and B matches C, all three will be
+ * treated as part of the same duplicate group.
+ *
+ * Among duplicates, the best episode is selected
+ */
+
 public class EpisodeDeduplicator {
 
     public List<Episode> deduplicate(List<Episode> episodes, ProcessingStats stats) {
@@ -16,7 +32,7 @@ public class EpisodeDeduplicator {
 
             List<EpisodeKey> keys = generateKeys(episode);
 
-            // Find all duplicates connected by any key
+            // Stores all duplicates connected by any key of the current episode
             Set<Episode> duplicates = new HashSet<>();
 
             for (EpisodeKey key : keys) {
@@ -86,7 +102,7 @@ public class EpisodeDeduplicator {
         return keys;
     }
 
-    /**
+    /*
      * Chooses the best episode between two duplicates.
      * Priority order:
      * 1. Episode with a valid air date

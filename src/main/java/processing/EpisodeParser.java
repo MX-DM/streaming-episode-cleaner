@@ -33,7 +33,8 @@ public class EpisodeParser {
         // Track whether this line required any correction
         boolean[] correctedLine = {false};
 
-        // Normalize text and increase corrected counter if necessary
+        // Normalize textual fields (trim + collapse spaces + lowercase).
+        // Only whitespace corrections increase the corrected counter.
         String series = EpisodeNormalizer.normalize(parts[0], correctedLine);
         String title = EpisodeNormalizer.normalize(parts[3], correctedLine);
 
@@ -112,7 +113,7 @@ public class EpisodeParser {
         }
     }
 
-    /**
+    /*
      * Pads a CSV line with missing columns so it always has 5 fields.
      */
     private String[] pad(String[] arr) {
