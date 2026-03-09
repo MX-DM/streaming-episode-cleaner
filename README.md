@@ -65,27 +65,70 @@ The architecture separates responsibilities into clear components:
 
 ---
 
-# How to Run
+## Requirements
 
-Compile and run the program from the project root with a csv file containing episodes in the specified route.
+The project requires the following tools installed on your system:
 
-```
-javac Main.java
-java Main
-```
+* **Java 17 or newer**
+* **Apache Maven 3.8+**
 
-Input file location:
+You can verify the installation with:
 
 ```
-src/main/resources/input/episodes.csv
+java -version
+mvn -version
 ```
 
-After execution the following files will be generated:
+---
+
+## How to Run
+
+1. Place your input CSV file inside the following directory:
 
 ```
-episodes_clean.csv
-report.md
+src/main/resources/input/
 ```
+
+The program will automatically detect the **first `.csv` file** found in this folder.
+The file name does **not** need to follow any specific convention.
+
+Example:
+
+```
+src/main/resources/input/
+    dataset.csv
+```
+
+2. Compile the project:
+
+```
+mvn compile
+```
+
+3. Run the application:
+
+```
+mvn exec:java
+```
+
+---
+
+## Customizing the Input Directory
+
+By default, the program looks for input files in:
+
+```
+src/main/resources/input/
+```
+
+This path is defined inside the `CsvReader` class:
+
+```java
+private static final String INPUT_FOLDER = "src/main/resources/input";
+```
+
+If desired, this value can be modified to point to a different directory depending on your environment or workflow.
+
 
 ---
 

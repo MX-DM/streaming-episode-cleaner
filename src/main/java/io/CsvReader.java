@@ -10,7 +10,32 @@ import java.util.*;
 
 public class CsvReader {
 
-    public List<String> read(String path) throws IOException {
+    // Folder can be changed here
+
+    private static final String INPUT_FOLDER = "src/main/resources/input";
+
+    public List<String> read() throws IOException {
+
+        File folder = new File(INPUT_FOLDER);
+
+        File[] csvFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
+
+        if (csvFiles == null || csvFiles.length == 0) {
+            throw new RuntimeException("No CSV file found in " + INPUT_FOLDER);
+        }
+
+        if (csvFiles.length > 1) {
+            System.out.println("Multiple CSV files found. Using: " + csvFiles[0].getName());
+        }
+
+        File inputFile = csvFiles[0];
+
+        System.out.println("Input CSV detected: " + inputFile.getName());
+
+        return readFile(inputFile.getAbsolutePath());
+    }
+
+    private List<String> readFile(String path) throws IOException {
 
         List<String> lines = new ArrayList<>();
 
@@ -20,7 +45,7 @@ public class CsvReader {
 
             // Detect a typical header like: Series,Season,Episode,Title,AirDate
             if (firstLine != null && !isHeader(firstLine)) {
-                lines.add(firstLine); // it's actually data
+                lines.add(firstLine);
             }
 
             String line;

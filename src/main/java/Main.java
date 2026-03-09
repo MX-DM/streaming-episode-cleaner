@@ -5,6 +5,7 @@ import processing.EpisodeProcessor;
 import report.ReportGenerator;
 import stats.ProcessingStats;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -22,8 +23,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        String input = "src/main/resources/input/episodes.csv";
-
         CsvReader reader = new CsvReader();
         CsvWriter writer = new CsvWriter();
         ReportGenerator report = new ReportGenerator();
@@ -32,7 +31,7 @@ public class Main {
 
         EpisodeProcessor processor = new EpisodeProcessor();
 
-        List<String> lines = reader.read(input);
+        List<String> lines = reader.read();
 
         List<Episode> cleaned = processor.process(lines, stats);
 
@@ -41,5 +40,7 @@ public class Main {
         report.generate("report.md", stats);
 
         System.out.println("Processing completed.");
+        System.out.println("Output file: episodes_clean.csv");
+        System.out.println("Report generated: report.md");
     }
 }
