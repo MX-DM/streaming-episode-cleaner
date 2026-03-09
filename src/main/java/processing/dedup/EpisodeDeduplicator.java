@@ -35,8 +35,6 @@ public class EpisodeDeduplicator {
 
             } else {
 
-                stats.duplicates += duplicates.size();
-
                 // Determine best episode among all connected ones
                 Episode best = episode;
 
@@ -58,6 +56,7 @@ public class EpisodeDeduplicator {
                     allKeys.addAll(generateKeys(dup));
                 }
 
+                // Add current episode keys
                 allKeys.addAll(keys);
 
                 // Update index so all keys point to the best episode
@@ -67,6 +66,7 @@ public class EpisodeDeduplicator {
             }
         }
 
+        stats.duplicates = episodes.size() -  keptEpisodes.size();
         return new ArrayList<>(keptEpisodes);
     }
 
