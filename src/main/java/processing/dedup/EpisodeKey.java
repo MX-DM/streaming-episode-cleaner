@@ -38,4 +38,12 @@ public class EpisodeKey {
     public int hashCode() {
         return Objects.hash(series, season, episode, title);
     }
+
+    @Override
+    public String toString() {
+        return  '(' + series + ',' + ' ' +
+                season + ',' + ' ' +
+                episode + ',' + ' ' +
+                title   + ',' + ')';
+    }
 }

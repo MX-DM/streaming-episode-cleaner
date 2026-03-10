@@ -234,10 +234,33 @@ The goal is to identify episodes that represent the same real-world entity even 
 
 ---
 
-# Matching Keys
+## Deduplication Key Generation
 
-Each episode generates three possible identification keys.
-These keys represent the three matching rules defined for the deduplication process.
+To efficiently detect duplicates, each episode generates multiple **deduplication keys** representing different ways two records may refer to the same episode. This approach allows the algorithm to still identify duplicates even when some fields are missing or inconsistent.
+
+The primary key always uses the **series name, season number, and episode number**, which represent the most reliable identifiers:
+
+```java
+keys.add(new EpisodeKey(series, season, episode, null));
+```
+
+In addition to this primary key, the algorithm generates **secondary keys based on the episode title** combined with either the season or episode number. These help detect duplicates when one of the numeric identifiers is missing.
+
+However, special care must be taken when working with **default placeholder values** introduced during parsing, such as:
+
+- `season = 0`
+- `episode = 0`
+- `"Untitled Episode"`
+
+If title-based keys are generated when the title is a placeholder, it can create overly generic keys that incorrectly match unrelated records. For example, a key such as:
+
+```
+(series, 0, episode, "Untitled Episode")
+```
+
+could match many different episodes that simply share placeholder values.
+
+To prevent these false matches, **title-based keys are only generated when the title is not the default placeholder**. The key generation logic is therefore:
 
 ```java
 private List<EpisodeKey> generateKeys(Episode ep) {
@@ -250,12 +273,14 @@ private List<EpisodeKey> generateKeys(Episode ep) {
     String title = ep.getEpisodeTitle();
 
     keys.add(new EpisodeKey(series, season, episode, null));
-    keys.add(new EpisodeKey(series, 0, episode, title));
-    keys.add(new EpisodeKey(series, season, 0, title));
-
+    if (!title.equalsIgnoreCase("Untitled Episode")) {
+        keys.add(new EpisodeKey(series, 0, episode, title));
+        keys.add(new EpisodeKey(series, season, 0, title));
+    }
     return keys;
 }
 ```
+This safeguard ensures that title-based matching is only applied when the title contains meaningful information, preventing placeholder values from creating unintended duplicate relationships.
 
 These correspond to the following matching strategies:
 
@@ -264,8 +289,6 @@ These correspond to the following matching strategies:
 | Exact episode   | `(series, season, episode)`   | Used when both season and episode numbers are known |
 | Unknown season  | `(series, 0, episode, title)` | Allows matching when season is missing              |
 | Unknown episode | `(series, season, 0, title)`  | Allows matching when episode number is missing      |
-
-Using multiple keys allows the algorithm to match records even when some information is incomplete.
 
 ---
 

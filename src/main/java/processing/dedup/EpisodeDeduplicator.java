@@ -79,6 +79,8 @@ public class EpisodeDeduplicator {
                 for (EpisodeKey key : allKeys) {
                     keyIndex.put(key, best);
                 }
+
+                // keyIndex.forEach((key, value) -> System.out.println("Key: " + key.toString() + ", Value: " + value.toString()));
             }
         }
 
@@ -96,8 +98,11 @@ public class EpisodeDeduplicator {
         String title = ep.getEpisodeTitle();
 
         keys.add(new EpisodeKey(series, season, episode, null));
-        keys.add(new EpisodeKey(series, 0, episode, title));
-        keys.add(new EpisodeKey(series, season, 0, title));
+        if (!title.equalsIgnoreCase("Untitled Episode")) {
+            keys.add(new EpisodeKey(series, 0, episode, title));
+            keys.add(new EpisodeKey(series, season, 0, title));
+        }
+
 
         return keys;
     }
