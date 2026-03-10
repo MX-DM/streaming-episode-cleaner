@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Streaming Episode Cleaner** is a Java application designed to clean and normalize television episode datasets stored in CSV format.
+**Streaming Episode Cleaner** is a Java application designed to clean and normalize series and TV shows episodes datasets stored in CSV format.
 
 The program processes raw episode data, applies validation and normalization rules, detects duplicate records, and produces a consistent catalog of episodes.
 
@@ -150,6 +150,18 @@ The program processes episode data through the following stages:
 7. **Generate Output Files**
 
 This pipeline ensures that inconsistent or incomplete records are handled safely before the final catalog is produced.
+
+---
+
+## Files format
+
+The .csv files to be loaded need to have 5 columns in this order:
+
+* **Series Name** – name of the series (required)
+* **Season Number** – season number (may be missing or invalid)
+* **Episode Number** – episode number (may be missing or invalid)
+* **Episode Title** – episode title (may be missing)
+* **Air Date** – date when the episode aired (may be missing or invalid)
 
 ---
 
