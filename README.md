@@ -95,8 +95,7 @@ The file name does **not** need to follow any specific convention.
 Example:
 
 ```
-src/main/resources/input/
-    dataset.csv
+src/main/resources/input/dataset.csv
 ```
 
 2. Compile the project:
@@ -109,6 +108,12 @@ mvn compile
 
 ```
 mvn exec:java
+```
+
+### Preloaded showcase file
+A sample episodes .csv file is preloaded in the directory which showcases the whole process over significant examples
+```
+src/main/resources/input/sample_episodes.csv
 ```
 
 ---
